@@ -17,6 +17,7 @@
 , libGLU
 , freeglut
 , xorg
+, freeimage
 }:
 
 stdenv.mkDerivation rec {

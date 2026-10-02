@@ -12,6 +12,8 @@
 , pugixml
 , libpng
 , libjpeg
+, libGL
+, libX11
 }:
 
 stdenv.mkDerivation rec {

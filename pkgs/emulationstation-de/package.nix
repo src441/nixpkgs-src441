@@ -14,6 +14,9 @@
 , libjpeg
 , libGL
 , libX11
+, libGLU
+, freeglut
+, xorg
 }:
 
 stdenv.mkDerivation rec {
@@ -38,10 +41,15 @@ stdenv.mkDerivation rec {
     curl
     ffmpeg
     libgit2
-    libunwind
+    libunwind    
+    libGLU      
+    freeglut     
+    xorg.libX11  
+    xorg.libXmu  
     pugixml
     libpng
     libjpeg
+    
   ];
 
   cmakeFlags = [

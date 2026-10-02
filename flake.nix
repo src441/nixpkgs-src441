@@ -23,7 +23,6 @@
         src441pkgs = {
           emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {};
           freeimage-legacy = pkgs.callPackage ./pkgs/freeimage/package.nix {};          
-          freeimage-legacy = freeimage-legacy;
         };
     };
   };

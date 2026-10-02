@@ -16,7 +16,7 @@
 , libX11
 , libGLU
 , freeglut
-, xorg
+, libXmu
 , freeimage
 }:
 

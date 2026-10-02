@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
     owner = "es-de";
     repo = "emulationstation-de";
     rev = "v${version}";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    hash = "sha256-MFCLE8RnpvSAYY4UhJ+uwdIlhlyJsiLjSUUAJrNgd1c=";
   };
 
   nativeBuildInputs = [

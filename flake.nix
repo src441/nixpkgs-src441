@@ -14,7 +14,7 @@
       packages = forAllSystems (system:
         let
           pkgs = import nixpkgs { inherit system; };
-          freeimage = pkgs.callPackage ./pkgs/freeimage/package.nix {};
+          freeimage-legacy = pkgs.callPackage ./pkgs/freeimage/package.nix {};
         in {
           emulationstation-de = pkgs.callPackage ./pkgs/emulationstation-de/package.nix {};
           inherit freeimage;
@@ -23,7 +23,7 @@
       overlays.default = final: prev: {
         src441pkgs = {
           emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {};
-          freeimage = final.src441pkgs.freeimage;
+          freeimage-legacy = final.src441pkgs.freeimage-legacy;
         };
     };
   };

@@ -17,7 +17,7 @@
           freeimage-legacy = pkgs.callPackage ./pkgs/freeimage/package.nix {};
         in {
           emulationstation-de = pkgs.callPackage ./pkgs/emulationstation-de/package.nix {};
-          inherit freeimage;
+          inherit freeimage-legacy;
         }
       );
       overlays.default = final: prev: {

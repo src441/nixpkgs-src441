@@ -1,7 +1,7 @@
 { lib, stdenv, fetchurl, unzip }:
 
 stdenv.mkDerivation rec {
-  pname = "freeimage";
+  pname = "freeimage-legacy";
   version = "3.18.0";
 
   src = fetchurl {

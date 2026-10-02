@@ -17,7 +17,7 @@
 , libGLU
 , freeglut
 , libXmu
-, freeimage
+, freeimage-legacy
 }:
 
 stdenv.mkDerivation rec {
@@ -50,7 +50,7 @@ stdenv.mkDerivation rec {
     pugixml
     libpng
     libjpeg
-    freeimage
+    freeimage-legacy
   ];
 
   cmakeFlags = [

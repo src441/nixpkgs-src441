@@ -45,12 +45,12 @@ stdenv.mkDerivation rec {
     libunwind    
     libGLU      
     freeglut     
-    xorg.libX11  
-    xorg.libXmu  
+    libX11  
+    libXmu  
     pugixml
     libpng
     libjpeg
-    
+    freeimage
   ];
 
   cmakeFlags = [

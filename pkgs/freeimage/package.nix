@@ -13,6 +13,7 @@ stdenv.mkDerivation rec {
 
   NIX_CFLAGS_COMPILE = [ 
     "-std=c++11" 
+    "-D_GNU_SOURCE"
     "-Wno-error=old-style-definition"
     "-Wno-error=implicit-function-declaration"
     "-Wno-error=incompatible-pointer-types"

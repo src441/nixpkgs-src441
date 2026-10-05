@@ -38,14 +38,10 @@ stdenv.mkDerivation (finalAttrs: {
   ];
 
   postPatch = ''
-    # To support cross compilation, use the correct `pkg-config`.
-    substituteInPlace Makefile.fip \
-      --replace-fail "pkg-config" "$PKG_CONFIG"
-    substituteInPlace Makefile.gnu \
-      --replace-fail "pkg-config" "$PKG_CONFIG"
-    substituteInPlace Source/FreeImage/PluginEXR.cpp \
-      --replace-fail "#include <OpenEXR/half.h>" "#include <Imath/half.h>"
-      --replace-fail "Imath::Int64" "uint64_t"
+    substituteInPlace Makefile.fip --replace-fail "pkg-config" "$PKG_CONFIG"
+    substituteInPlace Makefile.gnu --replace-fail "pkg-config" "$PKG_CONFIG"
+    substituteInPlace Source/FreeImage/PluginEXR.cpp --replace-fail "#include <OpenEXR/half.h>" "#include <Imath/half.h>"
+    substituteInPlace Source/FreeImage/PluginEXR.cpp --replace-fail "Imath::Int64" "uint64_t"
   '';
 
   nativeBuildInputs = [

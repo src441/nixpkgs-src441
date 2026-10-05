@@ -11,6 +11,12 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ unzip ];
 
+  NIX_CFLAGS_COMPILE = [
+    "-std=gnu++14"
+    "-Wno-error=register"
+    "-Wno-error=dynamic-exception-spec"
+  ];
+
   patchPhase = ''
     sed -i 's/PowerPC/Generic/g' Source/FreeImage/PluginTIFF.cpp
   '';

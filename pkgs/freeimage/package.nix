@@ -37,8 +37,22 @@ stdenv.mkDerivation rec {
   '';
 
   meta = with lib; {
-    description = "FOSS library for supporting various image types (iirc its a vulnerable package, however ES-DE needs it sooo)";
+    description = "FOSS library for supporting various image types";
     homepage = "https://sourceforge.io";
+    knownVulnerabilities = [
+      "CVE-2021-33367"
+      "CVE-2021-40262"
+      "CVE-2021-40263"
+      "CVE-2021-40264"
+      "CVE-2021-40265"
+      "CVE-2021-40266"
+
+      "CVE-2023-47992"
+      "CVE-2023-47993"
+      "CVE-2023-47994"
+      "CVE-2023-47995"
+      "CVE-2023-47996"
+    ];
     license = licenses.gpl2Only;
     platforms = platforms.linux;
   };

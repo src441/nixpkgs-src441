@@ -16,7 +16,7 @@
           pkgs = import nixpkgs { inherit system; };
         in {
           emulationstation-de = pkgs.callPackage ./pkgs/emulationstation-de/package.nix {};
-          freeimage-legacy = freeimage-legacy;
+          freeimage-legacy = pkgs.callPackage ./pkgs/freeimage/package.nix;
         }
       );
       overlays.default = final: prev: {

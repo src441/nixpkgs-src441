@@ -11,7 +11,7 @@ let
   version = "3.5.0";
 
   src = fetchurl {
-    url = "https://gitlab.com/es-de/emulationstation-de/-/releases/v${version}/downloads/ES-DE_${version}_x64.AppImage";
+    url = "https://gitlab.com/es-de/emulationstation-de/-/package_files/357717909/download"; # not effective, but if im updating ill just change the URL
     hash = lib.fakeHash;
   };
 

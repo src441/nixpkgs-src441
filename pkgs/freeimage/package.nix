@@ -1,44 +1,111 @@
-{ lib, stdenv, fetchurl, unzip }:
+{
+  lib,
+  stdenv,
+  fetchsvn,
+  cctools,
+  libtiff,
+  libpng,
+  zlib,
+  libwebp,
+  libraw,
+  openexr,
+  openjpeg,
+  libjpeg,
+  jxrlib,
+  pkg-config,
+  fixDarwinDylibNames,
+  autoSignDarwinBinariesHook,
+}:
 
-stdenv.mkDerivation rec {
-  pname = "freeimage-legacy";
+stdenv.mkDerivation (finalAttrs: {
+  pname = "freeimage";
   version = "3.18.0";
 
-  src = fetchurl {
-    url = "mirror://sourceforge/freeimage/FreeImage${lib.replaceStrings ["."] [""] version}.zip";
-    hash = "sha256-9BN5aC+a2pTqezT+hr+e4Ak1oxR75BtlaclgWlPkOP0=";
+  src = fetchsvn {
+    url = "svn://svn.code.sf.net/p/freeimage/svn/";
+    rev = "1900";
+    sha256 = "rWoNlU/BWKZBPzRb1HqU6T0sT7aK6dpqKPe88+o/4sA=";
   };
 
-  nativeBuildInputs = [ unzip ];
+  sourceRoot = "${finalAttrs.src.name}/FreeImage/trunk";
 
-  NIX_CFLAGS_COMPILE = [ 
-    "-std=c++11" 
-    "-D_GNU_SOURCE"
-    "-Wno-error=old-style-definition"
-    "-Wno-error=implicit-function-declaration"
-    "-Wno-error=incompatible-pointer-types"
-  ]; 
-
-  makeFlags = [
-    "DESTDIR=$(out)"
-    "INCDIR=/include"
-    "INSTALLDIR=/lib"
+  # Ensure that the bundled libraries are not used at all
+  prePatch = ''
+    rm -rf Source/Lib* Source/OpenEXR Source/ZLib
+  '';
+  patches = [
+    ./unbundle.diff
+    ./libtiff-4.4.0.diff
   ];
 
-  patchPhase = ''
-    sed -i 's/PowerPC/Generic/g' Source/FreeImage/PluginTIFF.cpp
-    sed -i 's/CFLAGS =/CFLAGS = -std=c11 /' Makefile.gnu
-    sed -i 's/CXXFLAGS =/CXXFLAGS = -std=c++11 /' Makefile.gnu
-    sed -i 's|/usr||g' Makefile.gnu
+  postPatch =
+    ''
+      # To support cross compilation, use the correct `pkg-config`.
+      substituteInPlace Makefile.fip \
+        --replace "pkg-config" "$PKG_CONFIG"
+      substituteInPlace Makefile.gnu \
+        --replace "pkg-config" "$PKG_CONFIG"
+    ''
+    + lib.optionalString (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64) ''
+      # Upstream Makefile hardcodes i386 and x86_64 architectures only
+      substituteInPlace Makefile.osx --replace "x86_64" "arm64"
+    '';
+
+  nativeBuildInputs =
+    [
+      pkg-config
+    ]
+    ++ lib.optionals stdenv.hostPlatform.isDarwin [
+      cctools
+      fixDarwinDylibNames
+    ]
+    ++ lib.optionals (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64) [
+      autoSignDarwinBinariesHook
+    ];
+  buildInputs = [
+    libtiff
+    libtiff.dev_private
+    libpng
+    zlib
+    libwebp
+    libraw
+    openexr
+    openjpeg
+    libjpeg
+    libjpeg.dev_private
+    jxrlib
+  ];
+
+  postBuild = lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
+    make -f Makefile.fip
   '';
 
-  preInstall = ''
-    mkdir -p $out/include $out/lib
-  '';
+  INCDIR = "${placeholder "out"}/include";
+  INSTALLDIR = "${placeholder "out"}/lib";
 
-  meta = with lib; {
-    description = "FOSS library for supporting various image types";
-    homepage = "https://sourceforge.io";
+  preInstall =
+    ''
+      mkdir -p $INCDIR $INSTALLDIR
+    ''
+    # Workaround for Makefiles.osx not using ?=
+    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+      makeFlagsArray+=( "INCDIR=$INCDIR" "INSTALLDIR=$INSTALLDIR" )
+    '';
+
+  postInstall =
+    lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
+      make -f Makefile.fip install
+    ''
+    + lib.optionalString stdenv.hostPlatform.isDarwin ''
+      ln -s $out/lib/libfreeimage.3.dylib $out/lib/libfreeimage.dylib
+    '';
+
+  enableParallelBuilding = true;
+
+  meta = {
+    description = "Open Source library for accessing popular graphics image file formats";
+    homepage = "http://freeimage.sourceforge.net/";
+    license = "GPL";
     knownVulnerabilities = [
       "CVE-2021-33367"
       "CVE-2021-40262"
@@ -53,7 +120,9 @@ stdenv.mkDerivation rec {
       "CVE-2023-47995"
       "CVE-2023-47996"
     ];
-    license = licenses.gpl2Only;
-    platforms = platforms.linux;
+    maintainers = with lib.maintainers; [ 
+      # l-as - credits to him, imported from nixOS 24.11
+    ];
+    platforms = with lib.platforms; unix;
   };
-}
+})

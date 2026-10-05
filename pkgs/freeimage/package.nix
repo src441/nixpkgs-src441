@@ -19,13 +19,9 @@ stdenv.mkDerivation rec {
 
   patchPhase = ''
     sed -i 's/PowerPC/Generic/g' Source/FreeImage/PluginTIFF.cpp
+    sed -i 's/CFLAGS =/CFLAGS = -std=c11 /' Makefile.gnu
+    sed -i 's/CXXFLAGS =/CXXFLAGS = -std=c++11 /' Makefile.gnu
   '';
-
-  makeFlags = [
-    "DESTDIR=$(out)"
-    "INCDIR=/include"
-    "INSTALLDIR=/lib"
-  ];
 
   preInstall = ''
     mkdir -p $out/include $out/lib

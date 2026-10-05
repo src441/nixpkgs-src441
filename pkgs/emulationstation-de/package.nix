@@ -12,7 +12,7 @@ let
 
   src = fetchurl {
     url = "https://gitlab.com/es-de/emulationstation-de/-/releases/v${version}/downloads/EmulationStation-DE-${version}_x64.AppImage";
-    hash = "sha256-AAAAAAAAAAAAAAAAAAAA";
+    hash = "sha256";
   };
 
   extracted = appimageTools.extract {

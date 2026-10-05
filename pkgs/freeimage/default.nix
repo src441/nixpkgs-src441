@@ -45,6 +45,7 @@ stdenv.mkDerivation (finalAttrs: {
       --replace "pkg-config" "$PKG_CONFIG"
     substituteInPlace Source/FreeImage/PluginEXR.cpp \
       --replace "#include <OpenEXR/half.h>" "#include <Imath/half.h>"
+      --replace "Imath::Int64" "uint64_t"
   '';
 
   nativeBuildInputs = [

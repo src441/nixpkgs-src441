@@ -26,7 +26,7 @@ appimageTools.wrapType2 {
   ];
 
   meta = {
-    description = "EmulationStation Desktop Edition (AppImage wrapper)";
+    description = "EmulationStation Desktop Edition (AppImage version)";
     homepage = "https://es-de.org/";
     license = lib.licenses.mit; 
     platforms = [ "x86_64-linux" ];

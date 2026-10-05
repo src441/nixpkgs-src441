@@ -11,7 +11,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ unzip ];
 
-  NIX_CFLAGS_COMPILE = [ [ "-std=c++11" ]; ];
+  NIX_CFLAGS_COMPILE = [ "-std=c++11" ]; 
 
   patchPhase = ''
     sed -i 's/PowerPC/Generic/g' Source/FreeImage/PluginTIFF.cpp

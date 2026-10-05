@@ -3,6 +3,7 @@
   stdenv,
   fetchurl,
   appimageTools,
+  ...
 }:
 
 let

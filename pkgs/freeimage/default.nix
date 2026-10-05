@@ -24,7 +24,7 @@ stdenv.mkDerivation (finalAttrs: {
   src = fetchsvn {
     url = "svn://svn.code.sf.net/p/freeimage/svn/";
     rev = "1900";
-    sha256 = "rWoNlU/BWKZBPzRb1HqU6T0sT7aK6dpqKPe88+o/4sA=";
+    hash = "sha256-rWoNlU/BWKZBPzRb1HqU6T0sT7aK6dpqKPe88+o/4sA=";
   };
 
   sourceRoot = "${finalAttrs.src.name}/FreeImage/trunk";
@@ -33,35 +33,32 @@ stdenv.mkDerivation (finalAttrs: {
   prePatch = ''
     rm -rf Source/Lib* Source/OpenEXR Source/ZLib
   '';
+
   patches = [
     ./unbundle.diff
     ./libtiff-4.4.0.diff
   ];
 
-  postPatch =
-    ''
-      # To support cross compilation, use the correct `pkg-config`.
-      substituteInPlace Makefile.fip \
-        --replace "pkg-config" "$PKG_CONFIG"
-      substituteInPlace Makefile.gnu \
-        --replace "pkg-config" "$PKG_CONFIG"
-    ''
-    + lib.optionalString (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64) ''
-      # Upstream Makefile hardcodes i386 and x86_64 architectures only
-      substituteInPlace Makefile.osx --replace "x86_64" "arm64"
-    '';
+  postPatch = ''
+    # To support cross compilation, use the correct `pkg-config`.
+    substituteInPlace Makefile.fip \
+      --replace "pkg-config" "$PKG_CONFIG"
+    substituteInPlace Makefile.gnu \
+      --replace "pkg-config" "$PKG_CONFIG"
+  '' + lib.optionalString (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64) ''
+    # Upstream Makefile hardcodes i386 and x86_64 architectures only
+    substituteInPlace Makefile.osx --replace "x86_64" "arm64"
+  '';
 
-  nativeBuildInputs =
-    [
-      pkg-config
-    ]
-    ++ lib.optionals stdenv.hostPlatform.isDarwin [
-      cctools
-      fixDarwinDylibNames
-    ]
-    ++ lib.optionals (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64) [
-      autoSignDarwinBinariesHook
-    ];
+  nativeBuildInputs = [
+    pkg-config
+  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
+    cctools
+    fixDarwinDylibNames
+  ] ++ lib.optionals (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64) [
+    autoSignDarwinBinariesHook
+  ];
+
   buildInputs = [
     libtiff
     libtiff.dev_private
@@ -80,32 +77,30 @@ stdenv.mkDerivation (finalAttrs: {
     make -f Makefile.fip
   '';
 
-  INCDIR = "${placeholder "out"}/include";
-  INSTALLDIR = "${placeholder "out"}/lib";
+  env = {
+    INCDIR = "${placeholder "out"}/include";
+    INSTALLDIR = "${placeholder "out"}/lib";
+  };
 
-  preInstall =
-    ''
-      mkdir -p $INCDIR $INSTALLDIR
-    ''
+  preInstall = ''
+    mkdir -p $INCDIR$INSTALLDIR
+  '' + lib.optionalString stdenv.hostPlatform.isDarwin ''
     # Workaround for Makefiles.osx not using ?=
-    + lib.optionalString stdenv.hostPlatform.isDarwin ''
-      makeFlagsArray+=( "INCDIR=$INCDIR" "INSTALLDIR=$INSTALLDIR" )
-    '';
+    makeFlagsArray+=( "INCDIR=$INCDIR" "INSTALLDIR=$INSTALLDIR" )
+  '';
 
-  postInstall =
-    lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
-      make -f Makefile.fip install
-    ''
-    + lib.optionalString stdenv.hostPlatform.isDarwin ''
-      ln -s $out/lib/libfreeimage.3.dylib $out/lib/libfreeimage.dylib
-    '';
+  postInstall = if !stdenv.hostPlatform.isDarwin then ''
+    make -f Makefile.fip install
+  '' else ''
+    ln -s ${finalAttrs.finalPackage.lib}/lib/libfreeimage.3.dylib${placeholder "out"}/lib/libfreeimage.dylib
+  '';
 
   enableParallelBuilding = true;
 
   meta = {
     description = "Open Source library for accessing popular graphics image file formats";
     homepage = "http://freeimage.sourceforge.net/";
-    license = "GPL";
+    license = lib.licenses.gpl1Plus; # Refined from raw string "GPL" to standard license
     knownVulnerabilities = [
       "CVE-2021-33367"
       "CVE-2021-40262"
@@ -121,6 +116,6 @@ stdenv.mkDerivation (finalAttrs: {
       "CVE-2023-47996"
     ];
     maintainers = with lib.maintainers; [ l-as ];
-    platforms = with lib.platforms; unix;
+    platforms = lib.platforms.unix;
   };
 })

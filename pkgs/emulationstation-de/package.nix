@@ -1,68 +1,33 @@
-{ lib
-, stdenv
-, fetchFromGitLab
-, cmake
-, pkg-config
-, SDL2
-, alsa-lib
-, curl
-, ffmpeg
-, libgit2
-, libunwind
-, pugixml
-, libpng
-, libjpeg
-, libGL
-, libX11
-, libGLU
-, freeglut
-, libXmu
-, freeimage-legacy
+{
+  lib,
+  stdenv,
+  fetchurl,
+  appimageTools,
 }:
 
-stdenv.mkDerivation rec {
+let
   pname = "emulationstation-de";
   version = "3.5.0";
 
-  src = fetchFromGitLab {
-    owner = "es-de";
-    repo = "emulationstation-de";
-    rev = "v${version}";
-    hash = "sha256-MFCLE8RnpvSAYY4UhJ+uwdIlhlyJsiLjSUUAJrNgd1c=";
+  src = fetchurl {
+    url = "https://gitlab.com/es-de/emulationstation-de/-/releases/v${version}/downloads/EmulationStation-DE-${version}_x64.AppImage";
+    hash = "hello";
   };
 
-  nativeBuildInputs = [
-    cmake
-    pkg-config
+  extracted = appimageTools.extract {
+    inherit pname version src;
+  };
+in
+appimageTools.wrapType2 {
+  inherit pname version src;
+  extraPkgs = pkgs: with pkgs; [
+    # testinggg
   ];
 
-  buildInputs = [
-    SDL2
-    alsa-lib
-    curl
-    ffmpeg
-    libgit2
-    libunwind    
-    libGLU      
-    freeglut     
-    libX11  
-    libXmu  
-    pugixml
-    libpng
-    libjpeg
-    freeimage-legacy
-  ];
-
-  cmakeFlags = [
-    "-DUSE_SYSTEM_PUGIXML=ON"
-    "-DAPPLICATION_UPDATER=off"
-  ];
-
-  meta = with lib; {
-    description = "Emulator frontend";
-    homepage = "https://es-de.org";
-    license = licenses.gpl3Only;
-    maintainers = [ ];
-    platforms = platforms.linux;
+  meta = {
+    description = "EmulationStation Desktop Edition (AppImage wrapper)";
+    homepage = "https://es-de.org/";
+    license = lib.licenses.mit; 
+    platforms = [ "x86_64-linux" ];
   };
 }

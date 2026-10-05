@@ -15,14 +15,14 @@
         let
           pkgs = import nixpkgs { inherit system; };
         in {
-          emulationstation-de = pkgs.callPackage ./pkgs/emulationstation-de/package.nix {};
+          # emulationstation-de = pkgs.callPackage ./pkgs/emulationstation-de/package.nix {};
         }
       );
 
       overlays.default = final: prev: {
-        emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {};
+        # emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {};
         src441pkgs = {
-          emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {};
+          # emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {};
         };
       };
     };

@@ -48,7 +48,6 @@ stdenv.mkDerivation (finalAttrs: {
   nativeBuildInputs =[ pkg-config ];
   buildInputs = [
     libtiff
-    libtiff.dev_private
     libpng
     zlib
     libwebp
@@ -56,7 +55,6 @@ stdenv.mkDerivation (finalAttrs: {
     openexr
     openjpeg
     libjpeg
-    libjpeg.dev_private
     jxrlib
   ];
 

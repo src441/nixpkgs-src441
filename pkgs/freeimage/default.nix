@@ -7,6 +7,7 @@
   zlib,
   libwebp,
   libraw,
+  imath,
   openexr,
   openjpeg,
   libjpeg,
@@ -42,6 +43,8 @@ stdenv.mkDerivation (finalAttrs: {
       --replace "pkg-config" "$PKG_CONFIG"
     substituteInPlace Makefile.gnu \
       --replace "pkg-config" "$PKG_CONFIG"
+    substituteInPlace Source/FreeImage/PluginEXR.cpp \
+      --replace "#include <OpenEXR/half.h>" "#include <Imath/half.h>"
   '';
 
   nativeBuildInputs = [

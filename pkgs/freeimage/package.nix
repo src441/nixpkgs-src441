@@ -6,7 +6,7 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "mirror://sourceforge/freeimage/FreeImage${lib.replaceStrings ["."] [""] version}.zip";
-    hash = "sha256-6beea6M/x+AatFsh2bZ0XU+QZorXm0S38u7v0w93608=";
+    hash = "sha256-9BN5aC+a2pTqezT+hr+e4Ak1oxR75BtlaclgWlPkOP0=";
   };
 
   nativeBuildInputs = [ unzip ];

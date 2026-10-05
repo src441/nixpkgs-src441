@@ -12,7 +12,7 @@ let
 
   src = fetchurl {
     url = "https://gitlab.com/es-de/emulationstation-de/-/package_files/357717909/download"; # not effective, but if im updating ill just change the URL
-    hash = lib.fakeHash;
+    hash = "sha256-1nP8C3r4e1N9ceq858G7KO2jmuAlt/mRIt3ZQhfr6Qk=";
   };
 
   extracted = appimageTools.extract {

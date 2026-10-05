@@ -30,6 +30,7 @@ stdenv.mkDerivation (finalAttrs: {
   # Ensure that the bundled libraries are not used at all
   prePatch = ''
     rm -rf Source/Lib* Source/OpenEXR Source/ZLib
+    find Source/LibTIFF4 -name "*.c" -delete
   '';
 
   patches = [

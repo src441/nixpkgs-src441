@@ -11,7 +11,12 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ unzip ];
 
-  NIX_CFLAGS_COMPILE = [ "-std=c++11" ]; 
+  NIX_CFLAGS_COMPILE = [ 
+    "-std=c++11" 
+    "-Wno-error=old-style-definition"
+    "-Wno-error=implicit-function-declaration"
+    "-Wno-error=incompatible-pointer-types"
+  ]; 
 
   patchPhase = ''
     sed -i 's/PowerPC/Generic/g' Source/FreeImage/PluginTIFF.cpp

@@ -19,10 +19,17 @@ stdenv.mkDerivation rec {
     "-Wno-error=incompatible-pointer-types"
   ]; 
 
+  makeFlags = [
+    "DESTDIR=$(out)"
+    "INCDIR=/include"
+    "INSTALLDIR=/lib"
+  ];
+
   patchPhase = ''
     sed -i 's/PowerPC/Generic/g' Source/FreeImage/PluginTIFF.cpp
     sed -i 's/CFLAGS =/CFLAGS = -std=c11 /' Makefile.gnu
     sed -i 's/CXXFLAGS =/CXXFLAGS = -std=c++11 /' Makefile.gnu
+    sed -i 's|/usr||g' Makefile.gnu
   '';
 
   preInstall = ''

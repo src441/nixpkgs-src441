@@ -18,7 +18,7 @@
 }:
 
 stdenv.mkDerivation (finalAttrs: {
-  pname = "freeimage";
+  pname = "freeimage-legacy";
   version = "3.18.0";
 
   src = fetchsvn {

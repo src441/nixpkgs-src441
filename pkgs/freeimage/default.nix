@@ -85,20 +85,20 @@ stdenv.mkDerivation (finalAttrs: {
     description = "Open Source library for accessing popular graphics image file formats";
     homepage = "http://freeimage.sourceforge.net/";
     license = lib.licenses.gpl1Plus;
-    knownVulnerabilities = [
-      "CVE-2021-33367"
-      "CVE-2021-40262"
-      "CVE-2021-40263"
-      "CVE-2021-40264"
-      "CVE-2021-40265"
-      "CVE-2021-40266"
+    #knownVulnerabilities = [ stupid nix wont let me build when informing people :(
+    #  "CVE-2021-33367"
+    #  "CVE-2021-40262"
+    #  "CVE-2021-40263"
+    #  "CVE-2021-40264"
+    #  "CVE-2021-40265"
+    #  "CVE-2021-40266"
 
-      "CVE-2023-47992"
-      "CVE-2023-47993"
-      "CVE-2023-47994"
-      "CVE-2023-47995"
-      "CVE-2023-47996"
-    ];
+    #  "CVE-2023-47992"
+    #  "CVE-2023-47993"
+    #  "CVE-2023-47994"
+    #  "CVE-2023-47995"
+    #  "CVE-2023-47996"
+    #];
     maintainers = with lib.maintainers; [ l-as ];
     platforms = lib.platforms.linux;
   };

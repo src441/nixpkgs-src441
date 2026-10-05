@@ -14,16 +14,24 @@
       packages = forAllSystems (system:
         let
           pkgs = import nixpkgs { inherit system; };
+          freeimage-legacy-pkg = pkgs.callPackage ./pkgs/freeimage/package.nix {};
         in {
-          emulationstation-de = pkgs.callPackage ./pkgs/emulationstation-de/package.nix {};
-          freeimage-legacy = pkgs.callPackage ./pkgs/freeimage/package.nix;
+          emulationstation-de = pkgs.callPackage ./pkgs/emulationstation-de/package.nix {
+            freeimage-legacy = freeimage-legacy-pkg;
+          };
+          freeimage-legacy = freeimage-legacy-pkg;
         }
       );
+
       overlays.default = final: prev: {
-        src441pkgs = {
-          emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {};
-          freeimage-legacy = final.callPackage ./pkgs/freeimage/package.nix {};          
+        src441pkgs = let
+          freeimage-legacy-pkg = final.callPackage ./pkgs/freeimage/package.nix {};
+        in {
+          emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {
+            freeimage-legacy = freeimage-legacy-pkg;
+          };
+          freeimage-legacy = freeimage-legacy-pkg;          
         };
+      };
     };
-  };
 }

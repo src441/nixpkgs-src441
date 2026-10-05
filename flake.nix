@@ -22,7 +22,7 @@
       overlays.default = final: prev: {
         src441pkgs = {
           emulationstation-de = final.callPackage ./pkgs/emulationstation-de/package.nix {};
-          freeimage-legacy = pkgs.callPackage ./pkgs/freeimage/package.nix {};          
+          freeimage-legacy = final.callPackage ./pkgs/freeimage/package.nix {};          
         };
     };
   };

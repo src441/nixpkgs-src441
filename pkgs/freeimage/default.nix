@@ -2,7 +2,6 @@
   lib,
   stdenv,
   fetchsvn,
-  cctools,
   libtiff,
   libpng,
   zlib,
@@ -13,8 +12,6 @@
   libjpeg,
   jxrlib,
   pkg-config,
-  fixDarwinDylibNames,
-  autoSignDarwinBinariesHook,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -45,18 +42,10 @@ stdenv.mkDerivation (finalAttrs: {
       --replace "pkg-config" "$PKG_CONFIG"
     substituteInPlace Makefile.gnu \
       --replace "pkg-config" "$PKG_CONFIG"
-  '' + lib.optionalString (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64) ''
-    # Upstream Makefile hardcodes i386 and x86_64 architectures only
-    substituteInPlace Makefile.osx --replace "x86_64" "arm64"
   '';
 
   nativeBuildInputs = [
     pkg-config
-  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
-    cctools
-    fixDarwinDylibNames
-  ] ++ lib.optionals (stdenv.hostPlatform.isDarwin && stdenv.hostPlatform.isAarch64) [
-    autoSignDarwinBinariesHook
   ];
 
   buildInputs = [
@@ -73,7 +62,7 @@ stdenv.mkDerivation (finalAttrs: {
     jxrlib
   ];
 
-  postBuild = lib.optionalString (!stdenv.hostPlatform.isDarwin) ''
+  postBuild = ''
     make -f Makefile.fip
   '';
 
@@ -84,15 +73,10 @@ stdenv.mkDerivation (finalAttrs: {
 
   preInstall = ''
     mkdir -p $INCDIR$INSTALLDIR
-  '' + lib.optionalString stdenv.hostPlatform.isDarwin ''
-    # Workaround for Makefiles.osx not using ?=
-    makeFlagsArray+=( "INCDIR=$INCDIR" "INSTALLDIR=$INSTALLDIR" )
   '';
 
-  postInstall = if !stdenv.hostPlatform.isDarwin then ''
+  postInstall = ''
     make -f Makefile.fip install
-  '' else ''
-    ln -s ${finalAttrs.finalPackage.lib}/lib/libfreeimage.3.dylib${placeholder "out"}/lib/libfreeimage.dylib
   '';
 
   enableParallelBuilding = true;
@@ -100,7 +84,7 @@ stdenv.mkDerivation (finalAttrs: {
   meta = {
     description = "Open Source library for accessing popular graphics image file formats";
     homepage = "http://freeimage.sourceforge.net/";
-    license = lib.licenses.gpl1Plus; # Refined from raw string "GPL" to standard license
+    license = lib.licenses.gpl1Plus;
     knownVulnerabilities = [
       "CVE-2021-33367"
       "CVE-2021-40262"
@@ -116,6 +100,6 @@ stdenv.mkDerivation (finalAttrs: {
       "CVE-2023-47996"
     ];
     maintainers = with lib.maintainers; [ l-as ];
-    platforms = lib.platforms.unix;
+    platforms = lib.platforms.linux;
   };
 })
